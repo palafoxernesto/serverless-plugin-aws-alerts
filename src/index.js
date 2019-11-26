@@ -114,7 +114,7 @@ class AlertsPlugin {
       this.naming.getPatternMetricName(definition.metric, functionRef) :
       definition.metric;
 
-    const dimensions = definition.pattern ? []: this.naming.getDimensionsList(definition.dimensions, functionRef);
+    const dimensions = definition.pattern ? []: this.naming.getDimensionsList(definition.dimensions, functionRef, definition.omitDefaultDimension)
 
     const treatMissingData = definition.treatMissingData ? definition.treatMissingData : 'missing';
 

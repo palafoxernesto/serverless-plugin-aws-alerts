@@ -23,20 +23,23 @@ class Naming {
     return `${_.upperFirst(metricName)}${functionName}`;
   }
 
-  getDimensionsList(dimensionsList, funcRef) {
-    let funcNameDimension =  {
-      'Name': 'FunctionName',
-      'Value': {
+  getDimensionsList (dimensionsList, funcRef, omitDefaultDimension) {
+    if (omitDefaultDimension) {
+      return dimensionsList || []
+    }
+
+    const funcNameDimension = {
+      Name: 'FunctionName',
+      Value: {
         Ref: funcRef
       }
-    };
-    if(dimensionsList == null) {
-      return [funcNameDimension];
     }
-    let filteredDimensions = dimensionsList.filter( (dim) => {
-      return dim.Name != 'FunctionName'
+
+    const filteredDimensions = (dimensionsList || []).filter((dim) => {
+      return dim.Name !== 'FunctionName'
     })
-    filteredDimensions.push(funcNameDimension);
+
+    filteredDimensions.push(funcNameDimension)
     return filteredDimensions
   }
 
