@@ -953,7 +953,7 @@ describe('#index', function () {
         Properties: {
           AlarmDescription: definition.description,
           Namespace: definition.namespace,
-          MetricName: definition.metric,
+          MetricName: `${functionName}-${definition.metric}`,
           Threshold: definition.threshold,
           ExtendedStatistic: definition.statistic,
           Period: definition.period,
@@ -1002,7 +1002,7 @@ describe('#index', function () {
         Properties: {
           AlarmDescription: definition.description,
           Namespace: definition.namespace,
-          MetricName: definition.metric,
+          MetricName: `${functionName}-${definition.metric}`,
           Threshold: definition.threshold,
           ExtendedStatistic: definition.statistic,
           Period: definition.period,

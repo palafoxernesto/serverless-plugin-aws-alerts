@@ -114,6 +114,9 @@ class AlertsPlugin {
       this.naming.getPatternMetricName(definition.metric, functionRef) :
       definition.metric;
 
+    const customMetricNaming = this.naming.customNaming({
+      functionName, metricName: definition.metric
+    })
     const dimensions = definition.pattern ? []: this.naming.getDimensionsList(definition.dimensions, functionRef, definition.omitDefaultDimension)
 
     const treatMissingData = definition.treatMissingData ? definition.treatMissingData : 'missing';
@@ -122,7 +125,7 @@ class AlertsPlugin {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
         Namespace: namespace,
-        MetricName: metricId,
+        MetricName: customMetricNaming,
         AlarmDescription: definition.description,
         Threshold: definition.threshold,
         Period: definition.period,
