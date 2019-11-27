@@ -113,6 +113,8 @@ class AlertsPlugin {
     const metricId = definition.pattern ?
       this.naming.getPatternMetricName(definition.metric, functionRef) :
       definition.metric;
+    
+    // const normalizedFunctionName = this.providerNaming.getLambdaLogicalId(functionName);
 
     const customMetricNaming = this.naming.customNaming({
       functionName, metricName: definition.metric
@@ -236,7 +238,12 @@ class AlertsPlugin {
     const cfLogName = this.providerNaming.getLogGroupLogicalId(functionName);
     const metricNamespace = this.providerNaming.getStackName();
     const logGroupName = this.providerNaming.getLogGroupName(functionObj.name);
+
     const metricName = this.naming.getPatternMetricName(alarm.metric, normalizedFunctionName);
+
+    const customMetricNaming = this.naming.customNaming({
+      functionName, metricName: alarm.metric
+    })
 
     return {
       [logMetricCFRefALERT]: {
@@ -248,10 +255,11 @@ class AlertsPlugin {
           MetricTransformations: [{
             MetricValue: 1,
             MetricNamespace: metricNamespace,
-            MetricName: metricName
+            MetricName: customMetricNaming
           }]
         }
-      },
+      }
+      /*,
       [logMetricCFRefOK]: {
         Type: 'AWS::Logs::MetricFilter',
         DependsOn: cfLogName,
@@ -264,7 +272,7 @@ class AlertsPlugin {
             MetricName: metricName
           }]
         }
-      }
+      } */
     };
   }
 

@@ -903,7 +903,7 @@ describe('#index', function () {
         Properties: {
           AlarmDescription: definition.description,
           Namespace: definition.namespace,
-          MetricName: definition.metric,
+          MetricName: `${functionName}-${definition.metric}`,
           Threshold: definition.threshold,
           Statistic: definition.statistic,
           Period: definition.period,
@@ -1057,7 +1057,7 @@ describe('#index', function () {
           AlarmName: `fooservice-dev-${functionName}-${functionRef}-${definition.metric}-${definition.metric}`,
           AlarmDescription: definition.description,
           Namespace: definition.namespace,
-          MetricName: definition.metric,
+          MetricName: `${functionName}-${definition.metric}`,
           Threshold: definition.threshold,
           Period: definition.period,
           EvaluationPeriods: definition.evaluationPeriods,
