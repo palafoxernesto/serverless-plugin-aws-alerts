@@ -113,7 +113,12 @@ class AlertsPlugin {
     const metricId = definition.pattern ?
       this.naming.getPatternMetricName(definition.metric, functionRef) :
       definition.metric;
+    
+    // const normalizedFunctionName = this.providerNaming.getLambdaLogicalId(functionName);
 
+    const customMetricNaming = this.naming.customNaming({
+      functionName, metricName: definition.metric
+    })
     const dimensions = definition.pattern ? []: this.naming.getDimensionsList(definition.dimensions, functionRef, definition.omitDefaultDimension)
 
     const treatMissingData = definition.treatMissingData ? definition.treatMissingData : 'missing';
@@ -122,7 +127,7 @@ class AlertsPlugin {
       Type: 'AWS::CloudWatch::Alarm',
       Properties: {
         Namespace: namespace,
-        MetricName: metricId,
+        MetricName: customMetricNaming,
         AlarmDescription: definition.description,
         Threshold: definition.threshold,
         Period: definition.period,
@@ -233,7 +238,10 @@ class AlertsPlugin {
     const cfLogName = this.providerNaming.getLogGroupLogicalId(functionName);
     const metricNamespace = this.providerNaming.getStackName();
     const logGroupName = this.providerNaming.getLogGroupName(functionObj.name);
-    const metricName = this.naming.getPatternMetricName(alarm.metric, normalizedFunctionName);
+
+    const customMetricNaming = this.naming.customNaming({
+      functionName, metricName: alarm.metric
+    })
 
     return {
       [logMetricCFRefALERT]: {
@@ -245,20 +253,7 @@ class AlertsPlugin {
           MetricTransformations: [{
             MetricValue: 1,
             MetricNamespace: metricNamespace,
-            MetricName: metricName
-          }]
-        }
-      },
-      [logMetricCFRefOK]: {
-        Type: 'AWS::Logs::MetricFilter',
-        DependsOn: cfLogName,
-        Properties: {
-          FilterPattern: '',
-          LogGroupName: logGroupName,
-          MetricTransformations: [{
-            MetricValue: 0,
-            MetricNamespace: metricNamespace,
-            MetricName: metricName
+            MetricName: customMetricNaming
           }]
         }
       }

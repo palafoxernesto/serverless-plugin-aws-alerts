@@ -43,6 +43,10 @@ class Naming {
     return filteredDimensions
   }
 
+  customNaming(options) {
+    return `${options.functionName}-${options.metricName}`;
+  }
+
   getAlarmName(options) {
     const interpolatedTemplate = options.template
       .replace('$[functionName]', options.functionName)
