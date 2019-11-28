@@ -239,8 +239,6 @@ class AlertsPlugin {
     const metricNamespace = this.providerNaming.getStackName();
     const logGroupName = this.providerNaming.getLogGroupName(functionObj.name);
 
-    const metricName = this.naming.getPatternMetricName(alarm.metric, normalizedFunctionName);
-
     const customMetricNaming = this.naming.customNaming({
       functionName, metricName: alarm.metric
     })
@@ -259,20 +257,6 @@ class AlertsPlugin {
           }]
         }
       }
-      /*,
-      [logMetricCFRefOK]: {
-        Type: 'AWS::Logs::MetricFilter',
-        DependsOn: cfLogName,
-        Properties: {
-          FilterPattern: '',
-          LogGroupName: logGroupName,
-          MetricTransformations: [{
-            MetricValue: 0,
-            MetricNamespace: metricNamespace,
-            MetricName: metricName
-          }]
-        }
-      } */
     };
   }
 
