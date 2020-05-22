@@ -92,17 +92,16 @@ class AlertsPlugin {
 
 
     if (definition.okActions) {
-      definition.okActions.map( alertTopic => {okActions.push(alertTopics[alertTopic].ok)});
+      definition.okActions.map(alertTopic => { okActions.push(alertTopics[alertTopic].ok) });
     }
 
     if (definition.alarmActions) {
-      definition.alarmActions.map( alertTopic => {alarmActions.push(alertTopics[alertTopic].alarm)});
+      definition.alarmActions.map(alertTopic => { alarmActions.push(alertTopics[alertTopic].alarm) });
     }
 
     if (definition.insufficientDataActions) {
-      definition.insufficientDataActions.map( alertTopic => {insufficientDataActions.push(alertTopics[alertTopic].insufficientData)});
+      definition.insufficientDataActions.map(alertTopic => { insufficientDataActions.push(alertTopics[alertTopic].insufficientData) });
     }
-
 
     const stackName = this.awsProvider.naming.getStackName();
 
@@ -119,7 +118,8 @@ class AlertsPlugin {
     const customMetricNaming = this.naming.customNaming({
       functionName, metricName: definition.metric
     })
-    const dimensions = definition.pattern ? []: this.naming.getDimensionsList(definition.dimensions, functionRef, definition.omitDefaultDimension)
+
+    const dimensions = definition.pattern ? [] : this.naming.getDimensionsList(definition.dimensions, functionRef, definition.omitDefaultDimension);
 
     const treatMissingData = definition.treatMissingData ? definition.treatMissingData : 'missing';
 
@@ -145,6 +145,7 @@ class AlertsPlugin {
     if (definition.nameTemplate) {
       alarm.Properties.AlarmName = this.naming.getAlarmName({
         template: definition.nameTemplate,
+        prefixTemplate: definition.prefixTemplate,
         functionLogicalId: functionRef,
         metricName: definition.metric,
         metricId,
@@ -153,7 +154,7 @@ class AlertsPlugin {
       });
     }
 
-    const statisticValues = [ 'SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'];
+    const statisticValues = ['SampleCount', 'Average', 'Sum', 'Minimum', 'Maximum'];
     if (_.includes(statisticValues, definition.statistic)) {
       alarm.Properties.Statistic = definition.statistic
     } else {
@@ -191,16 +192,16 @@ class AlertsPlugin {
         const cfRef = `AwsAlerts${customAlarmName ? _.upperFirst(customAlarmName) : ''}${_.upperFirst(key)}`;
         if (customAlarmName) {
           if (!alertTopics[customAlarmName]) {
-          alertTopics[customAlarmName] = {}
-                }
+            alertTopics[customAlarmName] = {}
+          }
           alertTopics[customAlarmName][key] = {
             Ref: cfRef
           };
-              } else {
+        } else {
           alertTopics[key] = {
             Ref: cfRef
           };
-              }
+        }
 
         this.addCfResources({
           [cfRef]: this.getSnsTopicCloudFormation(topic, notifications),
@@ -218,11 +219,11 @@ class AlertsPlugin {
     if (config.topics) {
       Object.keys(config.topics).forEach((key) => {
         if (['ok', 'alarm', 'insufficientData'].indexOf(key) !== -1) {
-      this._addAlertTopic(key, config.topics, alertTopics)
+          this._addAlertTopic(key, config.topics, alertTopics)
         } else {
-      Object.keys(config.topics[key]).forEach((subkey) => {
-        this._addAlertTopic(subkey, config.topics[key], alertTopics, key)
-      })
+          Object.keys(config.topics[key]).forEach((subkey) => {
+            this._addAlertTopic(subkey, config.topics[key], alertTopics, key)
+          })
         }
       });
     }
@@ -271,7 +272,7 @@ class AlertsPlugin {
       const normalizedFunctionName = this.providerNaming.getLambdaLogicalId(functionName);
 
       const functionAlarms = this.getFunctionAlarms(functionObj, config, definitions);
-      const alarms = globalAlarms.concat(functionAlarms).map(alarm => _.assign({ nameTemplate: config.nameTemplate }, alarm));
+      const alarms = globalAlarms.concat(functionAlarms).map(alarm => _.assign({ nameTemplate: config.nameTemplate, prefixTemplate: config.prefixTemplate }, alarm));
 
       const alarmStatements = alarms.reduce((statements, alarm) => {
         const key = this.naming.getAlarmCloudFormationRef(alarm.name, functionName);
@@ -314,7 +315,7 @@ class AlertsPlugin {
 
     const cf = _.chain(dashboardTemplates)
       .uniq()
-      .reduce( (acc, d) => {
+      .reduce((acc, d) => {
         const dashboard = dashboards.createDashboard(service.service, stage, region, functions, d);
 
         const cfResource = d === 'default'

@@ -26,6 +26,7 @@ custom:
     dashboards: true
 
     nameTemplate: $[functionName]-$[metricName]-Alarm # Optionally - naming template for alarms, can be overwritten in definitions
+    prefixTemplate: $[stackName] # Optionally - override the alarm name prefix
 
     topics:
       ok: ${self:service}-${opt:stage}-alerts-ok
@@ -38,6 +39,7 @@ custom:
         description: 'My custom alarm'
         namespace: 'AWS/Lambda'
         nameTemplate: $[functionName]-Duration-IMPORTANT-Alarm # Optionally - naming template for the alarms, overwrites globally defined one
+        prefixTemplate: $[stackName] # Optionally - override the alarm name prefix, overwrites globally defined one
         metric: duration
         threshold: 200
         statistic: Average
@@ -284,10 +286,9 @@ definitions:
 ```
 ## Additional dimensions
 
-The plugin allows users to provide custom dimensions for the alarm. Dimensions are provided in a list of key/value pairs {Name: foo, Value:bar} 
-The plugin will always apply dimension of {Name: FunctionName, Value: ((FunctionName))}, except if the parameter `omitDefaultDimension: true` is passed.
- For example:
- 
+The plugin allows users to provide custom dimensions for the alarm. Dimensions are provided in a list of key/value pairs {Name: foo, Value:bar}
+The plugin will always apply dimension of {Name: FunctionName, Value: ((FunctionName))}, except if the parameter `omitDefaultDimension: true` is passed. For example:
+
 ```yaml
     alarms: # merged with function alarms
       - name: fooAlarm
